@@ -1,0 +1,187 @@
+
+<%- include("partials/header.ejs") %>
+
+<button id='refreshWeather'><i class="fas fa-sync-alt fa-lg"></i></button>
+<div class="container">
+  <ul id="weatherRibbon" class="subcontainer">
+    
+  </ul>
+  
+  <div id="weatherDetail" class="subcontainer">
+  </div>
+  
+  <div id="recommendation" class="subcontainer">
+    
+  </div>
+</div>
+
+<script>
+  const refreshButton = document.querySelector('#refreshWeather')
+  const weatherRibbon = document.querySelector('#weatherRibbon')
+  let test = {};
+  
+  refreshButton.addEventListener('click', ()=>{
+    updateWeather('Boston,MA')
+  })
+
+  document.addEventListener('onload', initializeWeatherRibbon())
+  
+  weatherRibbon.addEventListener('mouseover', (event)=>{
+    // Filter event to only run off ribbonItems or lower
+    if (event.target.className != "subcontainer"){
+      const ribbonItem = getRibbonItem(event.target)
+      composeDetailDiv(`${ribbonItem.dataset.UTCHour} \n ${ribbonItem.dataset.temp}`)
+    }
+  })
+  
+  
+  function getRibbonItem(node){
+    // Recursive function to determine the highest ribbonItem parent of all children
+    let highestNode = node;
+    // Exit if parent is subcontainer
+    while (highestNode.parentNode.className!="subcontainer"){
+      highestNode = getParent(node.parentNode);
+    }
+    return highestNode;
+  }
+  
+  async function updateWeather(loc) {
+    const endpoint = 'https://open.mapquestapi.com/geocoding/v1/address'
+    const appKey = '<%= process.env.MAPQUEST_KEY %>'
+    const query = `${endpoint}?key=${appKey}&location=${loc}`
+    
+    fetch(query, {method:'GET'})
+    .then(handleErrors)
+    .then(parseJSON)
+    .then(extractLatLng)
+    .then(getWeather)
+    .catch(console.warn)
+  }
+  
+  async function getWeather(latLng) {
+    const endpoint = 'https://api.openweathermap.org/data/2.5/onecall?'
+    const appKey = '<%= process.env.OPENWEATHERMAP_KEY %>'
+    const query = `${endpoint}?appid=${appKey}&lat=${latLng['lat']}&lon=${latLng['lng']}&exclude=minutely`
+    const weatherTest = 'https://api.openweathermap.org/data/2.5/onecall?appid=ebffee292a34b5a3e6c80e7a60a0cdef&lat=42.360253&lon=-71.058291'
+    fetch(weatherTest, {method:'GET'})
+    .then(handleErrors)
+    .then(parseJSON)
+    .then(updateWeatherDisplay)
+  }
+  
+  function handleErrors(request) {
+    if(!request.ok){
+      console.warn(request)
+      throw Error(request.status);
+    }
+    return request
+  }
+    
+  function parseJSON(request) {
+    return request.json()
+      .then((data)=>{
+        return data;
+    })
+  }
+  
+  function extractLatLng(data) {
+    return data.results[0].locations[0].latLng
+  }
+  
+  function updateWeatherDisplay(data) {
+    console.log(data)
+    test = data;
+    // Clear the ribbon
+    weatherRibbon.innerHTML='';
+    // Populate the ribbon
+    for (let i=0;i<24;i++) {
+      const hData = data.hourly[i];
+      composeHourDiv(hData);
+    }
+  }
+  
+  function composeHourDiv(hourly){
+    // const indexDiv = '<p class="ribbonIndex">'+indexHourly+'</p>'
+    const condCode = hourly.weather[0].icon
+    const condIconURL = `http://openweathermap.org/img/wn/${condCode}@2x.png`
+    const condDiv = '<img class="ribbonCond" src="'+condIconURL+'"></img>'
+    
+    const temp = parseInt(tempKelvinToFahrenheit(hourly.temp))
+    const tempDiv = '<p class="ribbonTemp">'+temp+'<span class="ribbonTempUnit">F</span></p>';
+    
+    const hour = normalizeHour(getUTCHour(hourly.dt));
+    const ampm = normalizeAMPM(getUTCHour(hourly.dt));
+    const hourDiv = '<p class="ribbonHour">'+hour+'</p>';
+    const ampmDiv = '<p class="ribbonAmpm">'+ampm+'</p>';
+    
+    const hDiv = document.createElement("li");
+    hDiv.innerHTML = condDiv + tempDiv + hourDiv + ampmDiv
+    hDiv.className = "ribbonItem"
+    setWeatherAttributes(hDiv, hourly);
+    weatherRibbon.appendChild(hDiv);
+  }
+  
+  function initializeWeatherRibbon(){
+    const currHour = (new Date).getHours();
+    for (let i=0;i<24;i++){
+      
+      const condDiv = '<i class="fas fa-exclamation-triangle ribbonCond"></i>'
+      const tempDiv = '<p class="ribbonTemp">##</p>';
+      
+      const hour = normalizeHour(currHour+i);
+      const ampm = normalizeAMPM(currHour+i);
+      const hourDiv = '<p class="ribbonHour">'+hour+'</p>';
+      const ampmDiv = '<p class="ribbonAmpm">'+ampm+'</p>';
+      
+      const hDiv = document.createElement("P");
+      hDiv.innerHTML = condDiv + tempDiv + hourDiv + ampmDiv
+      hDiv.className = "ribbonItem"
+      weatherRibbon.appendChild(hDiv);
+    }
+  }
+  
+  function composeDetailDiv(data){
+    const detailDiv = document.querySelector("#weatherDetail");
+    detailDiv.innerText=data;
+  }
+  
+  function tempKelvinToFahrenheit(k) {
+    return ((parseFloat(k)-273.15)*1.8)+32
+  }
+  function tempKelvinToCelsius(k) {
+    return parseFloat(k)-273.15
+  }
+  
+  function getUTCHour(UTCTime) {
+    const UTCmilliseconds = new Date(UTCTime*1000);
+    const localeOffset = new Date().getTimezoneOffset()*60*1000;
+    const localeTime = UTCmilliseconds-localeOffset;
+    const UTChour = new Date(localeTime).getUTCHours();
+    return UTChour
+  }
+  
+  function normalizeHour(UTChour){
+    // Given UTC hour, return hour in 12-hour clock format
+    return parseInt(UTChour)===0 ? 12 : UTChour>12 ? UTChour-12 : UTChour; 
+  }
+  
+  function normalizeAMPM(UTChour){
+    // Given UTC hour, return AM or PM
+    return UTChour >=12 ? "PM" : "AM"; 
+  }
+  
+  function setWeatherAttributes(div, data){
+    div.dataset.temp      = data.temp
+    div.dataset.UTCHour   = getUTCHour(data.dt)
+    div.dataset.condId    = data.weather[0].id
+    div.dataset.condMain  = data.weather[0].main
+    div.dataset.iconCode  = data.weather[0].icon
+    div.dataset.precip    = data.rain // if available
+    div.dataset.snow      = data.snow // if available
+    div.dataset.windSpeed = data.wind_speed;
+    div.dataset.windDir   = data.wind_deg;
+  }
+
+</script>
+  
+<%- include("partials/footer.ejs") %>

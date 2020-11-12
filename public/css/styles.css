@@ -1,0 +1,106 @@
+body {
+  background-color: #363438;
+  width: 100%;
+  height: 100%;
+}
+
+.container {
+  background-color: #fff;
+  width: 1000px;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.subcontainer {
+  width: 95%;
+  margin: 10px auto;
+  background-color: #fff;
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* Weather Refresh Button Styles */
+
+#refreshWeather {
+  background-color: #0496ff;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+}
+
+#refreshWeather > i {
+  color: white;
+}
+
+#refreshWeather:active {
+  border: 2px solid #0496ff;
+  color: #0496ff;
+  background-color: #fff;
+}
+
+#refreshWeather:active > i {
+  color: #0496ff;
+}
+
+#refreshWeather:focus {
+  border: none;
+  outline: none;
+}
+
+
+#weatherRibbon {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: stretch;
+  list-style: none;
+}
+
+.ribbonItem {
+  width: 3.7%;
+  height: 120px;
+  text-align: center;
+  margin: 0;
+}
+
+.ribbonItem:hover {
+  box-shadow: 0 4px 8px 0 #ffcf0f, 0 6px 20px 0 #ffcf66;
+}
+
+.ribbonItem > p {
+  margin: 0;
+}
+
+.ribbonItem > .ribbonCond {
+  width: 100%;
+}
+
+.ribbonItem > .ribbonTemp {
+  font-size: 1.2rem;
+  font-weight: 600;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.ribbonTempUnit {
+  font-size: 0.6rem;
+}
+
+.ribbonItem > .ribbonHour {
+  font-size: 1rem;
+}
+
+.ribbonItem > .ribbonAmpm {
+  font-size: 0.6rem;
+}

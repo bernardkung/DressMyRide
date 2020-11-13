@@ -27,10 +27,12 @@
   document.addEventListener('onload', initializeWeatherRibbon())
   
   weatherRibbon.addEventListener('mouseover', (event)=>{
-    // Filter event to only run off ribbonItems or lower
+    // Filter for only mouseover events on divs inside subcontainer
     if (event.target.className != "subcontainer"){
-      const ribbonItem = getRibbonItem(event.target)
-      composeDetailDiv(`${ribbonItem.dataset.UTCHour} \n ${ribbonItem.dataset.temp}`)
+      // Using the id to get the actual div, to access the dataset in the div
+      const ribbonID = getRibbonItem(event.target).id;
+      const ribbonItem = document.querySelector("#"+ribbonID);
+      composeDetailDiv(ribbonItem.dataset);
     }
   })
   
@@ -40,7 +42,7 @@
     let highestNode = node;
     // Exit if parent is subcontainer
     while (highestNode.parentNode.className!="subcontainer"){
-      highestNode = getParent(node.parentNode);
+      highestNode = getRibbonItem(node.parentNode);
     }
     return highestNode;
   }
@@ -96,11 +98,11 @@
     // Populate the ribbon
     for (let i=0;i<24;i++) {
       const hData = data.hourly[i];
-      composeHourDiv(hData);
+      composeHourDiv(hData, i);
     }
   }
   
-  function composeHourDiv(hourly){
+  function composeHourDiv(hourly, index){
     // const indexDiv = '<p class="ribbonIndex">'+indexHourly+'</p>'
     const condCode = hourly.weather[0].icon
     const condIconURL = `http://openweathermap.org/img/wn/${condCode}@2x.png`
@@ -118,6 +120,7 @@
     hDiv.innerHTML = condDiv + tempDiv + hourDiv + ampmDiv
     hDiv.className = "ribbonItem"
     setWeatherAttributes(hDiv, hourly);
+    hDiv.id = "ribbon"+index;
     weatherRibbon.appendChild(hDiv);
   }
   
@@ -134,15 +137,41 @@
       const ampmDiv = '<p class="ribbonAmpm">'+ampm+'</p>';
       
       const hDiv = document.createElement("li");
-      hDiv.innerHTML = condDiv + tempDiv + hourDiv + ampmDiv
-      hDiv.className = "ribbonItem"
+      hDiv.innerHTML = condDiv + tempDiv + hourDiv + ampmDiv;
+      hDiv.className = "ribbonItem";
+      hDiv.id = "ribbon"+i;
       weatherRibbon.appendChild(hDiv);
     }
   }
   
-  function composeDetailDiv(data){
+  function composeDetailDiv(dataset){
     const detailDiv = document.querySelector("#weatherDetail");
-    detailDiv.innerText=data;
+    detailDiv.innerHTML = "";
+    const newDiv = document.createElement("div");
+    
+    const condCode = dataset.iconCode
+    const condIconURL = `http://openweathermap.org/img/wn/${condCode}@2x.png`
+    const condDiv = `<p class="detailCond"><img src="${condIconURL}"></img><p class="detailCondMain">${dataset.condMain}</p></p>`
+    newDiv.innerHTML += condDiv;
+    
+    const temp = tempKelvinToFahrenheit(dataset.temp)
+    const tempDiv = `<p class="detailTemp"><p class="detailTempValue">${temp}</p><p class="detailTempUnit">F</p></p>`;
+    newDiv.innerHTML += tempDiv;
+    
+    const hour = normalizeHour(dataset.UTCHour);
+    const ampm = normalizeAMPM(dataset.UTCHour);
+    const hourDiv = `<p class="detailHour">${hour}</p>`;
+    const ampmDiv = `<p class="detailAMPM">${ampm}</p>`;
+    const timeDiv = `<p class="detailTime">${hourDiv}${ampmDiv}</p>`;
+    newDiv.innerHTML += timeDiv;
+    
+    const windDiv = `<p class="detailWind"><p class="detailWindSpeed">${dataset.wind_speed}</p><p class="detailWindDir">${dataset.windDir}</p></p>`;
+    newDiv.innerHTML += windDiv;
+    
+    const precipDiv = `<p class="detailPrecip"><p class="detailPrecipRain">${dataset.rain}</p><p class="detailPrecipSnow">${dataset.snow}</p></p>`;
+    newDiv.innerHTML += precipDiv;
+    
+    detailDiv.appendChild(newDiv);
   }
   
   function tempKelvinToFahrenheit(k) {
@@ -171,13 +200,13 @@
   }
   
   function setWeatherAttributes(div, data){
-    div.dataset.temp      = data.temp
-    div.dataset.UTCHour   = getUTCHour(data.dt)
-    div.dataset.condId    = data.weather[0].id
-    div.dataset.condMain  = data.weather[0].main
-    div.dataset.iconCode  = data.weather[0].icon
-    div.dataset.precip    = data.rain // if available
-    div.dataset.snow      = data.snow // if available
+    div.dataset.temp      = data.temp;
+    div.dataset.UTCHour   = getUTCHour(data.dt);
+    div.dataset.condId    = data.weather[0].id;
+    div.dataset.condMain  = data.weather[0].main;
+    div.dataset.iconCode  = data.weather[0].icon;
+    div.dataset.rain      = data.rain; // if available
+    div.dataset.snow      = data.snow; // if available
     div.dataset.windSpeed = data.wind_speed;
     div.dataset.windDir   = data.wind_deg;
   }

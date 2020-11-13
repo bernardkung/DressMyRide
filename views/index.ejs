@@ -104,7 +104,7 @@
     // const indexDiv = '<p class="ribbonIndex">'+indexHourly+'</p>'
     const condCode = hourly.weather[0].icon
     const condIconURL = `http://openweathermap.org/img/wn/${condCode}@2x.png`
-    const condDiv = '<img class="ribbonCond" src="'+condIconURL+'"></img>'
+    const condDiv = '<div class="ribbonCond"><img src="'+condIconURL+'"></img></div>'
     
     const temp = parseInt(tempKelvinToFahrenheit(hourly.temp))
     const tempDiv = '<p class="ribbonTemp">'+temp+'<span class="ribbonTempUnit">F</span></p>';
@@ -125,7 +125,7 @@
     const currHour = (new Date).getHours();
     for (let i=0;i<24;i++){
       
-      const condDiv = '<i class="fas fa-exclamation-triangle ribbonCond"></i>'
+      const condDiv = '<div class="ribbonCond"><i class="fas fa-exclamation-triangle"></i></div>'
       const tempDiv = '<p class="ribbonTemp">##</p>';
       
       const hour = normalizeHour(currHour+i);
@@ -133,7 +133,7 @@
       const hourDiv = '<p class="ribbonHour">'+hour+'</p>';
       const ampmDiv = '<p class="ribbonAmpm">'+ampm+'</p>';
       
-      const hDiv = document.createElement("P");
+      const hDiv = document.createElement("li");
       hDiv.innerHTML = condDiv + tempDiv + hourDiv + ampmDiv
       hDiv.className = "ribbonItem"
       weatherRibbon.appendChild(hDiv);

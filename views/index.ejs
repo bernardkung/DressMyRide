@@ -2,52 +2,131 @@
 <%- include("partials/header.ejs") %>
 
 <button id='refreshWeather'><i class="fas fa-sync-alt fa-lg"></i></button>
+
+
+
 <div class="container">
+  
+  
+  <form autocomplete="off" class="subcontainer">
+    <input id="searchBar" type="text" class="search" placeholder="City" autocomplete="false">
+    <div class="autocomplete">
+      <!-- suggestions are inserted from javascript -->
+    </div>
+  </form>
+  
   <ul id="weatherRibbon" class="subcontainer">
     
   </ul>
   
   <div id="weatherDetail" class="subcontainer">
+      <div id="detailTop" class="detailRibbon">
+        <span id="detailHour">4</span>
+        <span id="detailAmpm">pm</span>
+      </div>
+      
+      <div id="detailBot" class="detailRibbon">
+        <div class="detailBlock">
+          <img id="detailIcon" src="https://openweathermap.org/img/wn/11d@2x.png">
+        </div>
+        <div id="detailTemp" class="detailBlock">
+          <span id="detailTempValue">40</span>
+          <span id="detailTempDegree">&#176;</span>
+          <span id="detailTempUnit">F</span>
+        </div>        
+        <div id="detailDesc" class="detailBlock">
+          <p id="detailCond">thunderstorm with light rain</p>
+          <div id="detailWind">
+            <span id="detailWindSpeed"></span>
+            <span id="detailWindUnit"></span>
+            <span> of wind expected from </span>
+            <span id="detailWindDirection"></span>
+          </div>
+          <div id="detailPrecip">
+            <span id="detailPrecipChance"></span>
+            <span>% chance of </span>
+            <span id="detailPrecipValue"></span>
+            <span id="detailPrecipUnit">inches</span>
+            <span>of rain</span>
+          </div>
+        </div>
+      </div>
   </div>
   
-  <div id="recommendation" class="subcontainer">
-    
+  <div id="items" class="subcontainer">
+    <div id="head" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Helmet</span>
+    </div>
+    <div id="outer_torso" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Outer Torso</span>
+    </div>
+    <div id="mid_torso" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Mid Torso</span>
+    </div>
+    <div id="base_torso" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Base Torso</span>
+    </div>
+    <div id="hands" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Hands</span>
+    </div>
+    <div id="legs" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Legs</span>
+    </div>
+    <div id="socks" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Socks</span>
+    </div>
+    <div id="shoes" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Shoe Covers</span>
+    </div>
+    <div id="shoe_covers" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Shoes</span>
+    </div>
   </div>
+  
 </div>
+  <%- include("partials/scripts.ejs") %>
+  <%- include("partials/recommendations.ejs") %>
 
 <script>
+
+  
   const refreshButton = document.querySelector('#refreshWeather')
   const weatherRibbon = document.querySelector('#weatherRibbon')
   let test = {};
   
+  
+  // Refresh Button Events
   refreshButton.addEventListener('click', ()=>{
-    updateWeather('Boston,MA')
+    getLocationWeather('Boston,MA');
   })
 
+  // Weather Ribbon Events
   document.addEventListener('onload', initializeWeatherRibbon())
   
   weatherRibbon.addEventListener('mouseover', (event)=>{
     // Filter for only mouseover events on divs inside subcontainer
     if (event.target.className != "subcontainer"){
-      // Using the id to get the actual div, to access the dataset in the div
+      // Determine which ribbon item was moused over
       const ribbonID = getRibbonItem(event.target).id;
       const ribbonItem = document.querySelector("#"+ribbonID);
+      // Update the Hourly Detail and Recommendation
       composeDetailDiv(ribbonItem.dataset);
+      updateRecommendationItemSlot(ribbonItem.dataset);
     }
   })
   
-  
-  function getRibbonItem(node){
-    // Recursive function to determine the highest ribbonItem parent of all children
-    let highestNode = node;
-    // Exit if parent is subcontainer
-    while (highestNode.parentNode.className!="subcontainer"){
-      highestNode = getRibbonItem(node.parentNode);
-    }
-    return highestNode;
-  }
-  
-  async function updateWeather(loc) {
+
+  // Gets Location
+  async function getLocationWeather(loc) {
     const endpoint = 'https://open.mapquestapi.com/geocoding/v1/address'
     const appKey = '<%= process.env.MAPQUEST_KEY %>'
     const query = `${endpoint}?key=${appKey}&location=${loc}`
@@ -60,42 +139,24 @@
     .catch(console.warn)
   }
   
+  // Gets Weather
   async function getWeather(latLng) {
     const endpoint = 'https://api.openweathermap.org/data/2.5/onecall?'
     const appKey = '<%= process.env.OPENWEATHERMAP_KEY %>'
-    const query = `${endpoint}?appid=${appKey}&lat=${latLng['lat']}&lon=${latLng['lng']}&exclude=minutely`
+    const units = 'imperial'
+    const query = `${endpoint}?appid=${appKey}&lat=${latLng['lat']}&lon=${latLng['lng']}&units=${units}&exclude=minutely`
     const weatherTest = 'https://api.openweathermap.org/data/2.5/onecall?appid=ebffee292a34b5a3e6c80e7a60a0cdef&lat=42.360253&lon=-71.058291'
     fetch(weatherTest, {method:'GET'})
     .then(handleErrors)
     .then(parseJSON)
-    .then(updateWeatherDisplay)
+    .then(updateWeatherRibbon)
   }
   
-  function handleErrors(request) {
-    if(!request.ok){
-      console.warn(request)
-      throw Error(request.status);
-    }
-    return request
-  }
-    
-  function parseJSON(request) {
-    return request.json()
-      .then((data)=>{
-        return data;
-    })
-  }
-  
-  function extractLatLng(data) {
-    return data.results[0].locations[0].latLng
-  }
-  
-  function updateWeatherDisplay(data) {
-    console.log(data)
-    test = data;
+  function updateWeatherRibbon(data) {
+    // console.log(data) // debug print the data
     // Clear the ribbon
     weatherRibbon.innerHTML='';
-    // Populate the ribbon
+    // Create a div for each hour
     for (let i=0;i<24;i++) {
       const hData = data.hourly[i];
       composeHourDiv(hData, i);
@@ -103,7 +164,6 @@
   }
   
   function composeHourDiv(hourly, index){
-    // const indexDiv = '<p class="ribbonIndex">'+indexHourly+'</p>'
     const condCode = hourly.weather[0].icon
     const condIconURL = `http://openweathermap.org/img/wn/${condCode}@2x.png`
     const condDiv = '<div class="ribbonCond"><img src="'+condIconURL+'"></img></div>'
@@ -144,60 +204,35 @@
     }
   }
   
+  function createDiv(divTag, divClass, divValue) {
+    return `<${divTag} class="${divClass}">${divValue}</${divTag}>`
+  }
+  
   function composeDetailDiv(dataset){
-    const detailDiv = document.querySelector("#weatherDetail");
-    detailDiv.innerHTML = "";
-    const newDiv = document.createElement("div");
-    
-    const condCode = dataset.iconCode
-    const condIconURL = `http://openweathermap.org/img/wn/${condCode}@2x.png`
-    const condDiv = `<p class="detailCond"><img src="${condIconURL}"></img><p class="detailCondMain">${dataset.condMain}</p></p>`
-    newDiv.innerHTML += condDiv;
-    
-    const temp = tempKelvinToFahrenheit(dataset.temp)
-    const tempDiv = `<p class="detailTemp"><p class="detailTempValue">${temp}</p><p class="detailTempUnit">F</p></p>`;
-    newDiv.innerHTML += tempDiv;
-    
+    const detailDiv = document.querySelector('#weatherDetail')
+    // Set the hour
     const hour = normalizeHour(dataset.UTCHour);
     const ampm = normalizeAMPM(dataset.UTCHour);
-    const hourDiv = `<p class="detailHour">${hour}</p>`;
-    const ampmDiv = `<p class="detailAMPM">${ampm}</p>`;
-    const timeDiv = `<p class="detailTime">${hourDiv}${ampmDiv}</p>`;
-    newDiv.innerHTML += timeDiv;
+    // const timeDiv = document.getElementById('detailHour');
+    const timeDiv = detailDiv.querySelector('#detailHour');
+    timeDiv.innerText = hour;
+    const ampmDiv = document.getElementById('detailAmpm');
+    ampmDiv.innerText = ampm;
     
-    const windDiv = `<p class="detailWind"><p class="detailWindSpeed">${dataset.wind_speed}</p><p class="detailWindDir">${dataset.windDir}</p></p>`;
-    newDiv.innerHTML += windDiv;
+    // Set the condition icon
+    const condCode = dataset.iconCode
+    const condIconURL = `http://openweathermap.org/img/wn/${condCode}@2x.png`
+    const iconDiv = detailDiv.querySelector('#detailIcon');
+    iconDiv.src=condIconURL;
     
-    const precipDiv = `<p class="detailPrecip"><p class="detailPrecipRain">${dataset.rain}</p><p class="detailPrecipSnow">${dataset.snow}</p></p>`;
-    newDiv.innerHTML += precipDiv;
+    // Set the temperature
+    const tempDiv = detailDiv.querySelector('#detailTempValue');
+    const temp = parseInt(tempKelvinToFahrenheit(dataset.temp))
+    tempDiv.innerText = temp;
     
-    detailDiv.appendChild(newDiv);
+    // Set the condition details
   }
-  
-  function tempKelvinToFahrenheit(k) {
-    return ((parseFloat(k)-273.15)*1.8)+32
-  }
-  function tempKelvinToCelsius(k) {
-    return parseFloat(k)-273.15
-  }
-  
-  function getUTCHour(UTCTime) {
-    const UTCmilliseconds = new Date(UTCTime*1000);
-    const localeOffset = new Date().getTimezoneOffset()*60*1000;
-    const localeTime = UTCmilliseconds-localeOffset;
-    const UTChour = new Date(localeTime).getUTCHours();
-    return UTChour
-  }
-  
-  function normalizeHour(UTChour){
-    // Given UTC hour, return hour in 12-hour clock format
-    return parseInt(UTChour)===0 ? 12 : UTChour>12 ? UTChour-12 : UTChour; 
-  }
-  
-  function normalizeAMPM(UTChour){
-    // Given UTC hour, return AM or PM
-    return UTChour >=12 ? "PM" : "AM"; 
-  }
+
   
   function setWeatherAttributes(div, data){
     div.dataset.temp      = data.temp;
@@ -205,11 +240,86 @@
     div.dataset.condId    = data.weather[0].id;
     div.dataset.condMain  = data.weather[0].main;
     div.dataset.iconCode  = data.weather[0].icon;
-    div.dataset.rain      = data.rain; // if available
-    div.dataset.snow      = data.snow; // if available
     div.dataset.windSpeed = data.wind_speed;
     div.dataset.windDir   = data.wind_deg;
+    div.dataset.pop       = data.pop;
+    if (data.rain) {div.dataset.rain = data.rain["1h"]}
+    if (data.snow) {div.dataset.snow = data.snow["1h"]}
   }
+  
+  function updateRecommendationItemSlot(dataset){
+    const json = JSON.parse(recommendations);
+    const currTemp = tempKelvinToFahrenheit(dataset.temp);
+    // console.log(json) // debug print recommendation
+    
+    // Loop through all itemSlot divs 
+    const itemDivs = document.querySelectorAll(".itemSlot");
+    for (i=0;i<itemDivs.length;i++){
+      const itemDiv = itemDivs[i];
+      const options = json[itemDiv.id];
+      // Update itemSlot if a recommendation exists
+      if (options) {
+        options.forEach((option) => {
+          if (option.max > currTemp && currTemp >= option.min) {
+            const itemDivTitle = itemDiv.querySelector(".itemSlotTitle")
+            itemDivTitle.innerText = option.option_1;
+          } else {
+            // itemDiv.innerText = "";
+          }
+        })
+      };
+    };
+  };
+  
+  
+  // Location Search
+  const cities = [];
+  
+  function loadCities() {
+    // const cities_endpoint = 'https://gist.githubusercontent.com/bernardkung/ae9e212076bc4a5c5946bafe26282ff2/raw/ae460259cf35a22333b257f468fd6141ac948084/cities.json'
+    const cities_endpoint = '/assets/cities.json'
+    fetch(cities_endpoint)
+      .then(blob => blob.json())
+      .then(data => cities.push(...data));
+    console.log("pushed")
+    console.log(cities)
+  };
+  
+  function findMatches(wordToMatch, cities, matches) {
+    return cities.filter(place => {
+      // here we need to figure out if the city or state matches what was searched
+      const regex = new RegExp(wordToMatch, 'gi');
+      return place.city.match(regex) || place.state.match(regex)
+    });
+  }
+  
+  function displayMatches(){
+    // Take entered search location and create autocomplete suggestions
+    const autocomplete = document.querySelector('.autocomplete')
+    autocomplete.innerHTML = ""
+    
+    let matchArray = [];
+    if (this.value){
+      // Populate matchArray with all matching values
+      matchArray = findMatches(this.value, cities);
+      // Create a suggestion for the top 6 returning matched items
+      for (i=0; i<=6;i++) {
+        console.log(matchArray[i])
+        autocomplete.innerHTML += `<div class="autocomplete-items">${matchArray[i].city},${matchArray[i].state}</div>`
+      }
+    }
+    
+
+  }
+  
+  window.addEventListener('onload', loadCities());
+  const searchBar = document.querySelector("#searchBar");
+  
+  searchBar.addEventListener("keyup", displayMatches);
+
+  
+
+  
 
 </script>
   

@@ -1,0 +1,109 @@
+
+<%- include("partials/header.ejs") %>
+
+<div class="container">
+  <form id="searchForm" action="/location" method = "POST" class="subcontainer">
+    <input type="text" id="searchBar" name="location" class="search" placeholder="City" list="searchList">
+    <datalist id="searchList">
+      <!-- suggestions are inserted from javascript -->
+    </datalist>
+  </form>
+  
+  <div class="subcontainer">
+    <p id = "location">
+      <%= location %>
+    </p>
+    <p id="searchResult">
+      
+    </p>
+    
+    <p id="searchChange">
+      
+    </p>
+  </div>
+
+  
+</div>
+
+<script>
+
+  const searchBar = document.querySelector("#searchBar");
+  const searchForm = document.querySelector("#searchForm");
+  
+  const cities = <%- JSON.stringify(cities) %>
+  
+  searchBar.addEventListener("keyup", function(event) {
+    const res = filterCities(this.value, cities)
+    updateList(res);
+  });
+  
+  function filterCities(str, cities) {
+    const re = new RegExp(str, "i")
+    return cities
+      .filter(obj => re.test(obj.city) || re.test(obj.state))
+      .slice(0, 5)
+  }
+  
+  function updateList(arr) {
+    const div = document.querySelector("#searchList")
+    div.innerHTML = "";
+    arr.forEach((location) => {
+      console.log(`${location.city}, ${location.state}`)
+      const item = document.createElement('option');
+      item.value = `${location.city}, ${location.state}`
+      div.appendChild(item)
+    })
+  }
+  
+  window.addEventListener("load", function(event) {
+    const queryResult = lookupLocation("<%= location %>");
+  });
+  
+  // Controller function
+  async function lookupLocation(loc) {
+    const endpoint = 'https://open.mapquestapi.com/geocoding/v1/address'
+    const appKey = '<%= process.env.MAPQUEST_KEY %>'
+    const query = `${endpoint}?key=${appKey}&location=${loc}`
+    
+    fetch(query, {method:'GET'})
+    .then(handleErrors)
+    .then(parseJSON)
+    .then(extractLatLng)
+    .then(updateResult)
+    .catch(console.warn)
+  }
+
+  
+  function handleErrors(request) {
+    if(!request.ok){
+      console.warn(request)
+      throw Error(request.status);
+    }
+    return request
+  }
+    
+  function parseJSON(request) {
+    return request.json()
+      .then((data)=>{
+        return data;
+    })
+  }
+  
+  // Data Management
+  function extractLatLng(data) {
+    console.log(data);
+    return data.results[0].locations[0].latLng
+  }
+  
+  function updateResult(val) {
+    const div = document.querySelector("#searchResult");
+    div.innerText = `${val.lat}, ${val.lng}`;
+  }
+  
+  
+
+
+
+</script>
+  
+<%- include("partials/footer.ejs") %>

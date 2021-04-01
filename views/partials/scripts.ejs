@@ -1,0 +1,73 @@
+
+<script>
+
+  // Script Functions
+  function getRibbonItem(node){
+    // Recursive function to determine the highest ribbonItem parent of all children
+    let highestNode = node;
+    // Exit if parent is subcontainer
+    while (highestNode.parentNode.className!="subcontainer"){
+      highestNode = getRibbonItem(node.parentNode);
+    }
+    return highestNode;
+  }
+    
+  function handleErrors(request) {
+    if(!request.ok){
+      console.warn(request)
+      throw Error(request.status);
+    }
+    return request
+  }
+    
+  function parseJSON(request) {
+    return request.json()
+      .then((data)=>{
+        return data;
+    })
+  }
+  
+  // Data Management
+  function extractLatLng(data) {
+    return data.results[0].locations[0].latLng
+  }
+  
+  
+  // Unit Conversions    
+  function tempKelvinToFahrenheit(k) {
+    return ((parseFloat(k)-273.15)*1.8)+32
+  }
+  function tempKelvinToCelsius(k) {
+    return parseFloat(k)-273.15
+  }
+  
+  function convertKelvinTemp(temp, unit){
+    if (unit.toLowerCase() === 'f') {
+      return ((parseFloat(k)-273.15)*1.8)+32
+    } else if (unit.toLowerCase() === 'c') {
+      return parseFloat(k)-273.15
+    }
+  }
+  
+  function getUTCHour(UTCTime) {
+    const UTCmilliseconds = new Date(UTCTime*1000);
+    const localeOffset = new Date().getTimezoneOffset()*60*1000;
+    const localeTime = UTCmilliseconds-localeOffset;
+    const UTChour = new Date(localeTime).getUTCHours();
+    return UTChour
+  }
+  
+  function normalizeHour(UTChour){
+    // Given UTC hour, return hour in 12-hour clock format
+    return parseInt(UTChour)===0 ? 12 : UTChour>12 ? UTChour-12 : UTChour; 
+  }
+  
+  function normalizeAMPM(UTChour){
+    // Given UTC hour, return AM or PM
+    return UTChour >=12 ? "PM" : "AM"; 
+  }
+  
+  function normalizeDirection(degree){
+    return Math.round(degree/3.6, )
+  }
+</script>

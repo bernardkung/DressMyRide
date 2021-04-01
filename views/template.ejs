@@ -1,0 +1,103 @@
+
+<%- include("partials/header.ejs") %>
+
+<button id='refreshWeather'><i class="fas fa-sync-alt fa-lg"></i></button>
+<div class="container">
+  <ul id="weatherRibbon" class="subcontainer">
+    
+  </ul>
+  
+  <div id="weatherDetail" class="subcontainer">
+      <div id="detailTop" class="detailRibbon">
+        <span id="detailHour">4</span>
+        <span id="detailAmpm">pm</span>
+      </div>
+      
+      <div id="detailBot" class="detailRibbon">
+        <div class="detailBlock">
+          <img id="detailIcon" src="https://openweathermap.org/img/wn/11d@2x.png">
+        </div>
+        <div id="detailTemp" class="detailBlock">
+          <span>40</span><span>&#176;</span>
+        </div>        
+        <div id="detailDesc" class="detailBlock">
+          <p>thunderstorm with light rain</p>
+          <p>wind</p>
+          <p>precip</p>
+        </div>
+      </div>
+  </div>
+  
+  <div id="items" class="subcontainer">
+    <div id="head" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Helmet</span>
+    </div>
+    <div id="outer_torso" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Outer Torso</span>
+    </div>
+    <div id="mid_torso" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Mid Torso</span>
+    </div>
+    <div id="base_torso" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Base Torso</span>
+    </div>
+    <div id="hands" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Hands</span>
+    </div>
+    <div id="legs" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Legs</span>
+    </div>
+    <div id="socks" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Socks</span>
+    </div>
+    <div id="shoes" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Shoes</span>
+    </div>
+    <div id="shoe_covers" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Shoe Covers</span>
+    </div>
+  </div>
+</div>
+
+  <%- include("partials/scripts.ejs") %>
+  <%- include("partials/recommendations.ejs") %>
+
+<script>
+
+  
+  const refreshButton = document.querySelector('#refreshWeather')
+  const weatherRibbon = document.querySelector('#weatherRibbon')
+
+  // Weather Ribbon Events
+  document.addEventListener('onload', initializeWeatherRibbon())
+  
+  function initializeWeatherRibbon(){
+    const currHour = (new Date).getHours();
+    for (let i=0;i<24;i++){
+      
+      const condDiv = '<div class="ribbonCond"><i class="fas fa-exclamation-triangle"></i></div>'
+      const tempDiv = '<p class="ribbonTemp">##</p>';
+      
+      const hour = normalizeHour(currHour+i);
+      const ampm = normalizeAMPM(currHour+i);
+      const hourDiv = '<p class="ribbonHour">'+hour+'</p>';
+      const ampmDiv = '<p class="ribbonAmpm">'+ampm+'</p>';
+      
+      const hDiv = document.createElement("li");
+      hDiv.innerHTML = condDiv + tempDiv + hourDiv + ampmDiv;
+      hDiv.className = "ribbonItem";
+      hDiv.id = "ribbon"+i;
+      weatherRibbon.appendChild(hDiv);
+    }
+  }
+</script>
+<%- include("partials/footer.ejs") %>

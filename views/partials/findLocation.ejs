@@ -1,0 +1,32 @@
+
+  <script>
+  
+  const searchBar = document.querySelector("#searchBar");
+  const searchForm = document.querySelector("#searchForm");
+  
+  const cities = <%- JSON.stringify(cities) %>
+  
+  searchBar.addEventListener("keyup", function(event) {
+    const res = filterCities(this.value, cities)
+    updateList(res);
+  });
+  
+  function filterCities(str, cities) {
+    const re = new RegExp(str, "i")
+    return cities
+      .filter(obj => re.test(obj.city) || re.test(obj.state))
+      .slice(0, 5)
+  }
+  
+  function updateList(arr) {
+    const div = document.querySelector("#searchList")
+    div.innerHTML = "";
+    arr.forEach((location) => {
+      console.log(`${location.city}, ${location.state}`)
+      const item = document.createElement('option');
+      item.value = `${location.city}, ${location.state}`
+      div.appendChild(item)
+    })
+  }
+  
+  </script>

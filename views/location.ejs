@@ -9,98 +9,104 @@
     </datalist>
   </form>
   
-  <div class="subcontainer">
-    <p id = "location">
+  <div class="subcontainer" id="location">
+    <p id = "locationName">
       <%= location %>
     </p>
-    <p id="searchResult">
+    <p id="locationLatLng">
       
     </p>
     
-    <p id="searchChange">
-      
-    </p>
   </div>
 
+
+  <ul id="weatherRibbon" class="subcontainer">
+    <!--items are filled from script-->
+  </ul>
+  
+  <div id="weatherDetail" class="subcontainer">
+      <div id="detailTop" class="detailRibbon">
+        <span id="detailHour">4</span>
+        <span id="detailAmpm">pm</span>
+      </div>
+      
+      <div id="detailBot" class="detailRibbon">
+        <div class="detailBlock">
+          <img id="detailIcon" src="https://openweathermap.org/img/wn/11d@2x.png">
+        </div>
+        <div id="detailTemp" class="detailBlock">
+          <span id="detailTempValue">40</span>
+          <span id="detailTempDegree">&#176;</span>
+          <span id="detailTempUnit">F</span>
+        </div>        
+        <div id="detailDesc" class="detailBlock">
+          <p id="detailCond">thunderstorm with light rain</p>
+          <div id="detailWind">
+            <span id="detailWindSpeed"></span>
+            <span id="detailWindUnit"></span>
+            <span> of wind expected from </span>
+            <span id="detailWindDirection"></span>
+          </div>
+          <div id="detailPrecip">
+            <span id="detailPrecipChance"></span>
+            <span>% chance of </span>
+            <span id="detailPrecipValue"></span>
+            <span id="detailPrecipUnit">inches</span>
+            <span>of rain</span>
+          </div>
+        </div>
+      </div>
+  </div>
+  
+  <div id="items" class="subcontainer">
+    <div id="head" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Helmet</span>
+    </div>
+    <div id="outer_torso" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Outer Torso</span>
+    </div>
+    <div id="mid_torso" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Mid Torso</span>
+    </div>
+    <div id="inner_torso" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Base Torso</span>
+    </div>
+    <div id="hands" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Hands</span>
+    </div>
+    <div id="legs" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Legs</span>
+    </div>
+    <div id="socks" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Socks</span>
+    </div>
+    <div id="shoes" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Shoes</span>
+    </div>
+    <div id="shoe_covers" class="itemSlot">
+      <img class="itemSlotIcon" src="/assets/image.png">
+      <span class="itemSlotTitle">Shoe Covers</span>
+    </div>
+  </div>
   
 </div>
+  <%- include("partials/scripts.ejs") %>
+  <%- include("partials/recommendations.ejs") %>
 
+  <%- include("partials/findLocation.ejs") %>
+  <%- include("partials/loadLocation.ejs") %>
+  <%- include("partials/onLoad.ejs") %>
 <script>
 
-  const searchBar = document.querySelector("#searchBar");
-  const searchForm = document.querySelector("#searchForm");
-  
-  const cities = <%- JSON.stringify(cities) %>
-  
-  searchBar.addEventListener("keyup", function(event) {
-    const res = filterCities(this.value, cities)
-    updateList(res);
-  });
-  
-  function filterCities(str, cities) {
-    const re = new RegExp(str, "i")
-    return cities
-      .filter(obj => re.test(obj.city) || re.test(obj.state))
-      .slice(0, 5)
-  }
-  
-  function updateList(arr) {
-    const div = document.querySelector("#searchList")
-    div.innerHTML = "";
-    arr.forEach((location) => {
-      console.log(`${location.city}, ${location.state}`)
-      const item = document.createElement('option');
-      item.value = `${location.city}, ${location.state}`
-      div.appendChild(item)
-    })
-  }
-  
-  window.addEventListener("load", function(event) {
-    const queryResult = lookupLocation("<%= location %>");
-  });
-  
-  // Controller function
-  async function lookupLocation(loc) {
-    const endpoint = 'https://open.mapquestapi.com/geocoding/v1/address'
-    const appKey = '<%= process.env.MAPQUEST_KEY %>'
-    const query = `${endpoint}?key=${appKey}&location=${loc}`
-    
-    fetch(query, {method:'GET'})
-    .then(handleErrors)
-    .then(parseJSON)
-    .then(extractLatLng)
-    .then(updateResult)
-    .catch(console.warn)
-  }
 
-  
-  function handleErrors(request) {
-    if(!request.ok){
-      console.warn(request)
-      throw Error(request.status);
-    }
-    return request
-  }
-    
-  function parseJSON(request) {
-    return request.json()
-      .then((data)=>{
-        return data;
-    })
-  }
-  
-  // Data Management
-  function extractLatLng(data) {
-    console.log(data);
-    return data.results[0].locations[0].latLng
-  }
-  
-  function updateResult(val) {
-    const div = document.querySelector("#searchResult");
-    div.innerText = `${val.lat}, ${val.lng}`;
-  }
-  
-  
 
 
 

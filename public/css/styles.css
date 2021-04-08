@@ -41,7 +41,7 @@ body {
 }
 
 #searchBar {
-  width: 90%;
+  width: 100%;
   height: 40px;
   margin: 0;
   padding: 0;
@@ -70,21 +70,9 @@ body {
 }
 
 #searchList {
-  /*position: relative;*/
-  /*display: inline-block;*/
   width: 100%;
+  background-color: red;
 }
-
-/*#searchList-items{*/
-/*  position: absolute;*/
-/*  border: 1px solid #d4d4d4;*/
-/*  border-bottom: none;*/
-/*  border-top: none;*/
-/*  z-index: 99;*/
-/*  top: 100%;*/
-/*  left: 0;*/
-/*  right: 0;*/
-/*}*/
 
 .autocomplete-items div {
   padding: 10px;
@@ -305,3 +293,9 @@ body {
   padding-left: 15px;
 }
 
+.hidden {
+  visibility: hidden;
+  height: 0;
+  padding: 0;
+  margin: 0;
+}

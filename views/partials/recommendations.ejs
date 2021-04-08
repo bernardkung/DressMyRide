@@ -1,45 +1,37 @@
 <script>
-  const recommendations = `{
-  "legs":[
-    {"min":60, "max":200, "option_1":"shorts"},
-    {"min":40, "max":60 , "option_1":"tights", "option_2":"leg warmers"},
-    {"min":30, "max":40 , "option_1":"heavy tights"},
-    {"min":-200, "max":30, "option_1":"winter bib tights"}
-  ],
-  "outer_torso":[
-    {"min":-200,"max":45, "option_1":"lined cycling jacket"}
-  ],
-  "mid_torso":[
-    {"min":70,"max":200, "option_1":"short-sleeve jersey"},
-    {"min":50,"max":70, "option_1":"long-sleeve jersey"}
-  ],
-  "inner_torso":[
-    {"min":45,"max":60, "option_1":"long-sleeve base layer"},
-    {"min":-200,"max":40, "option_1":"thermal base layer"}
-  ],
-  "hands":[
-    {"min":45,"max":50, "option_1":"light gloves"},
-    {"min":40,"max":45, "option_1":"medium gloves"},
-    {"min":30,"max":40, "option_1":"heavy gloves"},
-    {"min":-200,"max":30, "option_1":"heavy mitts"}
-  ],
-  "head":[
-    {"min":30,"max":45, "option_1":"headband"},
-    {"min":25,"max":30, "option_1":"thermal cap"},
-    {"min":-200,"max":25, "option_1":"balaclava"}
-  ],
-  "socks":[
-    {"min":45,"max":200, "option_1":"socks"},
-    {"min":-200,"max":45, "option_1":"thermal socks"}
-  ],
-  "shoes":[
-    {"min":45,"max":200, "option_1":"cycling shoes"},
-    {"min":-200,"max":45, "option_1":"winter cycling shoes"}
-  ],
-  "shoe covers":[
-    {"min":30,"max":50, "option_1":"shoe covers"},
-    {"min":-200,"max":30, "option_1":"winter shoe covers"}
-  ]
-}`
+  const recommendations = [
+  
+    {"min":60, "max":200, name:"shorts", slot: "legs"},
+    {"min":40, "max":60 , name:"tights", slot: "legs"},
+    {"min":30, "max":40 , name:"heavy tights", slot: "legs"},
+    {"min":-200, "max":30, name:"winter bib tights", slot: "legs"},
+  
+    {"min":-200,"max":45, name:"lined cycling jacket", slot: "outer_torso"},
+  
+    {"min":70, "max":200, name:"short-sleeve jersey", slot: "mid_torso"},
+    {"min":50, "max":70, name:"long-sleeve jersey", slot: "mid_torso"},
+  
+    {"min":  45, "max":60, name:"long-sleeve base layer", slot: "inner_torso"},
+    {"min":-200, "max":40, name:"thermal base layer", slot: "inner_torso"},
+  
+    {"min":45,"max":50, name:"light gloves", slot: "hands"},
+    {"min":40,"max":45, name:"medium gloves", slot: "hands"},
+    {"min":30,"max":40, name:"heavy gloves", slot: "hands"},
+    {"min":-200,"max":30, name:"heavy mitts", slot: "hands"},
+  
+    {"min":30,"max":45, name:"headband", slot: "head"},
+    {"min":25,"max":30, name:"thermal cap", slot: "head"},
+    {"min":-200,"max":25, name:"balaclava", slot: "head"},
+  
+    {"min":45,"max":200, name:"socks", slot: "socks"},
+    {"min":-200,"max":45, name:"thermal socks", slot: "socks"},
+  
+    {"min":45,"max":200, name:"cycling shoes", slot: "shoes"},
+    {"min":-200,"max":45, name:"winter cycling shoes", slot: "shoes"},
+  
+    {"min":30,"max":50, name:"shoe covers", slot: "shoe_covers"},
+    {"min":-200,"max":30, name:"winter shoe covers", slot: "shoe_covers"}
+
+  ];
 
 </script>

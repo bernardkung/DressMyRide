@@ -1,22 +1,27 @@
 
 <%- include("partials/header.ejs") %>
 
-<button id='refreshWeather'><i class="fas fa-sync-alt fa-lg"></i></button>
-
-
-
 <div class="container">
-  
-  
-  <form autocomplete="off" class="subcontainer">
-    <input id="searchBar" type="text" class="search" placeholder="City" autocomplete="false">
-    <div class="autocomplete">
+  <form id="searchForm" action="" method = "POST" class="subcontainer">
+    <input type="text" id="searchBar" name="location" class="search" placeholder="City" list="searchList">
+    <datalist id="searchList">
       <!-- suggestions are inserted from javascript -->
-    </div>
+    </datalist>
   </form>
   
-  <ul id="weatherRibbon" class="subcontainer">
+  <div class="subcontainer" id="location">
+    <p id = "locationName">
+      <%= location %>
+    </p>
+    <p id="locationLatLng">
+      
+    </p>
     
+  </div>
+
+
+  <ul id="weatherRibbon" class="subcontainer">
+    <!--items are filled from script-->
   </ul>
   
   <div id="weatherDetail" class="subcontainer">
@@ -66,7 +71,7 @@
       <img class="itemSlotIcon" src="/assets/image.png">
       <span class="itemSlotTitle">Mid Torso</span>
     </div>
-    <div id="base_torso" class="itemSlot">
+    <div id="inner_torso" class="itemSlot">
       <img class="itemSlotIcon" src="/assets/image.png">
       <span class="itemSlotTitle">Base Torso</span>
     </div>
@@ -84,11 +89,11 @@
     </div>
     <div id="shoes" class="itemSlot">
       <img class="itemSlotIcon" src="/assets/image.png">
-      <span class="itemSlotTitle">Shoe Covers</span>
+      <span class="itemSlotTitle">Shoes</span>
     </div>
     <div id="shoe_covers" class="itemSlot">
       <img class="itemSlotIcon" src="/assets/image.png">
-      <span class="itemSlotTitle">Shoes</span>
+      <span class="itemSlotTitle">Shoe Covers</span>
     </div>
   </div>
   
@@ -96,230 +101,14 @@
   <%- include("partials/scripts.ejs") %>
   <%- include("partials/recommendations.ejs") %>
 
+  <%- include("partials/findLocation.ejs") %>
+  <%- include("partials/loadLocation.ejs") %>
+  <%- include("partials/onLoad.ejs") %>
 <script>
 
-  
-  const refreshButton = document.querySelector('#refreshWeather')
-  const weatherRibbon = document.querySelector('#weatherRibbon')
-  let test = {};
-  
-  
-  // Refresh Button Events
-  refreshButton.addEventListener('click', ()=>{
-    getLocationWeather('Boston,MA');
-  })
 
-  // Weather Ribbon Events
-  document.addEventListener('onload', initializeWeatherRibbon())
-  
-  weatherRibbon.addEventListener('mouseover', (event)=>{
-    // Filter for only mouseover events on divs inside subcontainer
-    if (event.target.className != "subcontainer"){
-      // Determine which ribbon item was moused over
-      const ribbonID = getRibbonItem(event.target).id;
-      const ribbonItem = document.querySelector("#"+ribbonID);
-      // Update the Hourly Detail and Recommendation
-      composeDetailDiv(ribbonItem.dataset);
-      updateRecommendationItemSlot(ribbonItem.dataset);
-    }
-  })
-  
 
-  // Gets Location
-  async function getLocationWeather(loc) {
-    const endpoint = 'https://open.mapquestapi.com/geocoding/v1/address'
-    const appKey = '<%= process.env.MAPQUEST_KEY %>'
-    const query = `${endpoint}?key=${appKey}&location=${loc}`
-    
-    fetch(query, {method:'GET'})
-    .then(handleErrors)
-    .then(parseJSON)
-    .then(extractLatLng)
-    .then(getWeather)
-    .catch(console.warn)
-  }
-  
-  // Gets Weather
-  async function getWeather(latLng) {
-    const endpoint = 'https://api.openweathermap.org/data/2.5/onecall?'
-    const appKey = '<%= process.env.OPENWEATHERMAP_KEY %>'
-    const units = 'imperial'
-    const query = `${endpoint}?appid=${appKey}&lat=${latLng['lat']}&lon=${latLng['lng']}&units=${units}&exclude=minutely`
-    const weatherTest = 'https://api.openweathermap.org/data/2.5/onecall?appid=ebffee292a34b5a3e6c80e7a60a0cdef&lat=42.360253&lon=-71.058291'
-    fetch(weatherTest, {method:'GET'})
-    .then(handleErrors)
-    .then(parseJSON)
-    .then(updateWeatherRibbon)
-  }
-  
-  function updateWeatherRibbon(data) {
-    // console.log(data) // debug print the data
-    // Clear the ribbon
-    weatherRibbon.innerHTML='';
-    // Create a div for each hour
-    for (let i=0;i<24;i++) {
-      const hData = data.hourly[i];
-      composeHourDiv(hData, i);
-    }
-  }
-  
-  function composeHourDiv(hourly, index){
-    const condCode = hourly.weather[0].icon
-    const condIconURL = `http://openweathermap.org/img/wn/${condCode}@2x.png`
-    const condDiv = '<div class="ribbonCond"><img src="'+condIconURL+'"></img></div>'
-    
-    const temp = parseInt(tempKelvinToFahrenheit(hourly.temp))
-    const tempDiv = '<p class="ribbonTemp">'+temp+'<span class="ribbonTempUnit">F</span></p>';
-    
-    const hour = normalizeHour(getUTCHour(hourly.dt));
-    const ampm = normalizeAMPM(getUTCHour(hourly.dt));
-    const hourDiv = '<p class="ribbonHour">'+hour+'</p>';
-    const ampmDiv = '<p class="ribbonAmpm">'+ampm+'</p>';
-    
-    const hDiv = document.createElement("li");
-    hDiv.innerHTML = condDiv + tempDiv + hourDiv + ampmDiv
-    hDiv.className = "ribbonItem"
-    setWeatherAttributes(hDiv, hourly);
-    hDiv.id = "ribbon"+index;
-    weatherRibbon.appendChild(hDiv);
-  }
-  
-  function initializeWeatherRibbon(){
-    const currHour = (new Date).getHours();
-    for (let i=0;i<24;i++){
-      
-      const condDiv = '<div class="ribbonCond"><i class="fas fa-exclamation-triangle"></i></div>'
-      const tempDiv = '<p class="ribbonTemp">##</p>';
-      
-      const hour = normalizeHour(currHour+i);
-      const ampm = normalizeAMPM(currHour+i);
-      const hourDiv = '<p class="ribbonHour">'+hour+'</p>';
-      const ampmDiv = '<p class="ribbonAmpm">'+ampm+'</p>';
-      
-      const hDiv = document.createElement("li");
-      hDiv.innerHTML = condDiv + tempDiv + hourDiv + ampmDiv;
-      hDiv.className = "ribbonItem";
-      hDiv.id = "ribbon"+i;
-      weatherRibbon.appendChild(hDiv);
-    }
-  }
-  
-  function createDiv(divTag, divClass, divValue) {
-    return `<${divTag} class="${divClass}">${divValue}</${divTag}>`
-  }
-  
-  function composeDetailDiv(dataset){
-    const detailDiv = document.querySelector('#weatherDetail')
-    // Set the hour
-    const hour = normalizeHour(dataset.UTCHour);
-    const ampm = normalizeAMPM(dataset.UTCHour);
-    // const timeDiv = document.getElementById('detailHour');
-    const timeDiv = detailDiv.querySelector('#detailHour');
-    timeDiv.innerText = hour;
-    const ampmDiv = document.getElementById('detailAmpm');
-    ampmDiv.innerText = ampm;
-    
-    // Set the condition icon
-    const condCode = dataset.iconCode
-    const condIconURL = `http://openweathermap.org/img/wn/${condCode}@2x.png`
-    const iconDiv = detailDiv.querySelector('#detailIcon');
-    iconDiv.src=condIconURL;
-    
-    // Set the temperature
-    const tempDiv = detailDiv.querySelector('#detailTempValue');
-    const temp = parseInt(tempKelvinToFahrenheit(dataset.temp))
-    tempDiv.innerText = temp;
-    
-    // Set the condition details
-  }
 
-  
-  function setWeatherAttributes(div, data){
-    div.dataset.temp      = data.temp;
-    div.dataset.UTCHour   = getUTCHour(data.dt);
-    div.dataset.condId    = data.weather[0].id;
-    div.dataset.condMain  = data.weather[0].main;
-    div.dataset.iconCode  = data.weather[0].icon;
-    div.dataset.windSpeed = data.wind_speed;
-    div.dataset.windDir   = data.wind_deg;
-    div.dataset.pop       = data.pop;
-    if (data.rain) {div.dataset.rain = data.rain["1h"]}
-    if (data.snow) {div.dataset.snow = data.snow["1h"]}
-  }
-  
-  function updateRecommendationItemSlot(dataset){
-    const json = JSON.parse(recommendations);
-    const currTemp = tempKelvinToFahrenheit(dataset.temp);
-    // console.log(json) // debug print recommendation
-    
-    // Loop through all itemSlot divs 
-    const itemDivs = document.querySelectorAll(".itemSlot");
-    for (i=0;i<itemDivs.length;i++){
-      const itemDiv = itemDivs[i];
-      const options = json[itemDiv.id];
-      // Update itemSlot if a recommendation exists
-      if (options) {
-        options.forEach((option) => {
-          if (option.max > currTemp && currTemp >= option.min) {
-            const itemDivTitle = itemDiv.querySelector(".itemSlotTitle")
-            itemDivTitle.innerText = option.option_1;
-          } else {
-            // itemDiv.innerText = "";
-          }
-        })
-      };
-    };
-  };
-  
-  
-  // Location Search
-  const cities = [];
-  
-  function loadCities() {
-    // const cities_endpoint = 'https://gist.githubusercontent.com/bernardkung/ae9e212076bc4a5c5946bafe26282ff2/raw/ae460259cf35a22333b257f468fd6141ac948084/cities.json'
-    const cities_endpoint = '/assets/cities.json'
-    fetch(cities_endpoint)
-      .then(blob => blob.json())
-      .then(data => cities.push(...data));
-    console.log("pushed")
-    console.log(cities)
-  };
-  
-  function findMatches(wordToMatch, cities, matches) {
-    return cities.filter(place => {
-      // here we need to figure out if the city or state matches what was searched
-      const regex = new RegExp(wordToMatch, 'gi');
-      return place.city.match(regex) || place.state.match(regex)
-    });
-  }
-  
-  function displayMatches(){
-    // Take entered search location and create autocomplete suggestions
-    const autocomplete = document.querySelector('.autocomplete')
-    autocomplete.innerHTML = ""
-    
-    let matchArray = [];
-    if (this.value){
-      // Populate matchArray with all matching values
-      matchArray = findMatches(this.value, cities);
-      // Create a suggestion for the top 6 returning matched items
-      for (i=0; i<=6;i++) {
-        console.log(matchArray[i])
-        autocomplete.innerHTML += `<div class="autocomplete-items">${matchArray[i].city},${matchArray[i].state}</div>`
-      }
-    }
-    
-
-  }
-  
-  window.addEventListener('onload', loadCities());
-  const searchBar = document.querySelector("#searchBar");
-  
-  searchBar.addEventListener("keyup", displayMatches);
-
-  
-
-  
 
 </script>
   

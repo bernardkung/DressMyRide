@@ -1,0 +1,23 @@
+<script>
+
+  // Controls the Weather Lookup
+  window.addEventListener("load", function(event) {
+    // If a location was provided on load, then the locationDiv 
+    const queryResult = lookupLocation("<%= location %>");
+  });
+
+  // On Weather Ribbon Hour mouseover, update the Detail div
+  weatherRibbon.addEventListener('mouseover', (event)=>{
+    // Filter for only mouseover events on divs inside subcontainer
+    if (event.target.className != "subcontainer"){
+      // Determine which ribbon item was moused over
+      const ribbonID = getRibbonItem(event.target).id;
+      const ribbonItem = document.querySelector("#"+ribbonID);
+      // Update the Hourly Detail and Recommendation
+      console.log("mouseover")
+      composeDetailDiv(ribbonItem.dataset);
+      updateRecommendationItemSlot(ribbonItem.dataset);
+    }
+  })
+  
+</script>

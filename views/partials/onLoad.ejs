@@ -14,7 +14,6 @@
       const ribbonID = getRibbonItem(event.target).id;
       const ribbonItem = document.querySelector("#"+ribbonID);
       // Update the Hourly Detail and Recommendation
-      console.log("mouseover")
       composeDetailDiv(ribbonItem.dataset);
       updateRecommendationItemSlot(ribbonItem.dataset);
     }

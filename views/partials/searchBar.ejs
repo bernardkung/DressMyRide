@@ -22,7 +22,6 @@
     const div = document.querySelector("#searchList")
     div.innerHTML = "";
     arr.forEach((location) => {
-      console.log(`${location.city}, ${location.state}`)
       const item = document.createElement('option');
       item.value = `${location.city}, ${location.state}`
       div.appendChild(item)

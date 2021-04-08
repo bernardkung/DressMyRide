@@ -24,6 +24,7 @@
     <!--items are filled from script-->
   </ul>
   
+  
   <div id="weatherDetail" class="subcontainer">
       <div id="detailTop" class="detailRibbon">
         <span id="detailHour">4</span>
@@ -40,10 +41,11 @@
           <span id="detailTempUnit">F</span>
         </div>        
         <div id="detailDesc" class="detailBlock">
+          
           <p id="detailCond">thunderstorm with light rain</p>
           <div id="detailWind">
             <span id="detailWindSpeed"></span>
-            <span id="detailWindUnit"></span>
+            <span id="detailWindUnit">mph</span>
             <span> of wind expected from </span>
             <span id="detailWindDirection"></span>
           </div>
@@ -55,8 +57,10 @@
             <span>of rain</span>
           </div>
         </div>
+        
       </div>
   </div>
+  
   
   <div id="items" class="subcontainer">
     <div id="head" class="itemSlot">
@@ -101,8 +105,8 @@
   <%- include("partials/scripts.ejs") %>
   <%- include("partials/recommendations.ejs") %>
 
-  <%- include("partials/findLocation.ejs") %>
-  <%- include("partials/loadLocation.ejs") %>
+  <%- include("partials/searchBar.ejs") %>
+  <%- include("partials/apiCalls.ejs") %>
   <%- include("partials/onLoad.ejs") %>
 <script>
 

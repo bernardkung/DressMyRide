@@ -1,0 +1,45 @@
+<script>
+
+  
+  // Controller function
+  async function lookupLocation(loc) {
+    const endpoint = 'https://open.mapquestapi.com/geocoding/v1/address'
+    const appKey = '<%= process.env.MAPQUEST_KEY %>'
+    const query = `${endpoint}?key=${appKey}&location=${loc}`
+    
+    fetch(query, {method:'GET'})
+    .then(handleErrors)
+    .then(parseJSON)
+    .then(extractLatLng)
+    .then(getWeather)
+    .catch(console.warn)
+  }
+  
+  // Gets Weather
+  async function getWeather(latLng) {
+    const endpoint = 'https://api.openweathermap.org/data/2.5/onecall'
+    const appKey = '<%= process.env.OPENWEATHERMAP_KEY %>'
+    const units = 'imperial'
+    const query = `${endpoint}?appid=${appKey}&lat=${latLng['lat']}&lon=${latLng['lng']}&units=${units}&exclude=minutely`
+    fetch(query, {method:'GET'})
+      .then(handleErrors)
+      .then(parseJSON)
+      .then(updatePage)
+      .catch(console.warn)
+  }
+  
+  function updatePage(data) {
+    updateLocation(data);
+    updateWeatherRibbon(data);
+  }
+
+  
+  function updateLocation(data) {
+    const div = document.querySelector("#locationLatLng")
+    div.innerText = data
+  }
+  
+  
+  
+  </script>
+  

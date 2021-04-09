@@ -69,7 +69,6 @@
   }
  
   function composeDetailDiv(dataset){
-    console.log(dataset)
     
     const detailDiv = document.querySelector('#weatherDetail')
     
@@ -98,18 +97,22 @@
     detailWindDir.innerText = `${normalizeDirection(dataset.windDir)} (${dataset.windDir})`
     
     // Set the rain/snow
-    const precipChance = detailDiv.querySelector("#detailPrecipChance");
-    const precipValue = detailDiv.querySelector("#detailPrecipValue");
-    precipChance.innerText = dataset.pop
-    precipValue.innerText = Math.max(
-      0, 
-      parseFloat(dataset.rain), 
-      parseFloat(dataset.snow),
-    )
+    const precipDiv = detailDiv.querySelector("#detailPrecip");
+    if (dataset.precipType!=="none") {
+      setClass(precipDiv, "visible");
+      const precipChance = detailDiv.querySelector("#detailPrecipChance");
+      const precipValue = detailDiv.querySelector("#detailPrecipValue");
+      const precipType = detailDiv.querySelector("#detailPrecipType")
+      precipChance.innerText = Math.round(dataset.pop*100)+"%"
+      precipValue.innerText = dataset.precipVal
+      precipType.innerText = dataset.precipType
+    } else {
+      setClass(precipDiv, "hidden");
+    }
+
   }  
     
   function setWeatherAttributes(div, data){
-    console.log(data)
     div.dataset.temp        = data.temp;
     div.dataset.UTCHour     = getUTCHour(data.dt);
     div.dataset.hour        = normalizeHour(getUTCHour(data.dt));
@@ -121,17 +124,16 @@
     div.dataset.windSpeed   = data.wind_speed;
     div.dataset.windDir     = data.wind_deg;
     div.dataset.pop         = data.pop;
-    div.dataset.precipType  = data.rain["1h"] 
+    div.dataset.precipType  = data.rain
     ? "rain" 
-    : data.snow["1h"]
+    : data.snow
       ? "snow"
       : "none"
-    div.dataset.precipVal   = data.rain["1h"] 
+    div.dataset.precipVal   = div.dataset.precipType === "rain" 
     ? parseFloat(data.rain["1h"])
-      : data.snow["1h"]
+      : div.dataset.precipType === "snow"
         ? parseFloat(data.snow["1h"])
-        : 0
-      
+        : 0  
   }
   
   function setClass(div, state) {

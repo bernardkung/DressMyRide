@@ -53,6 +53,7 @@ body {
   align-items: center;
 }
 
+
 /*Search Bar Styles*/
 #searchForm {
   width: 90%;
@@ -199,9 +200,6 @@ body {
   margin: 0;
 }
 
-#detailLocation {
-  text-transform: uppercase;
-}
 
 .detailTemp {
   font-size: 5rem;
@@ -226,7 +224,7 @@ body {
 
 /* Items */
 #items {
-  color: #000;
+  color: #ECECEC;
 }
 
 .itemSlot {
@@ -234,7 +232,7 @@ body {
   flex-flow: row nowrap;
   justify-content: center;
   align-items: center;
-  color: #fff;
+  color: #ECECEC;
   margin: 0;
   padding: 10px;
 }

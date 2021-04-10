@@ -2,7 +2,7 @@
 <%- include("partials/header.ejs") %>
 
 <div class="container flexCol">
-  <div class="banner">
+  <div class="banner header">
   <form id="searchForm" action="" method = "POST" class="subcontainer">
     <input type="text" id="searchBar" name="location" class="search" placeholder="City" list="searchList">
     <datalist id="searchList">
@@ -61,12 +61,10 @@
         
       </div>
   </div>
-  
-  
 
   
   
-  <div id="items" class="subcontainer">
+  <div id="items" class="subcontainer flexCol">
     <div id="head" class="itemSlot">
       <img class="itemSlotIcon" src="/assets/image.png">
       <span class="itemSlotTitle">Helmet</span>
@@ -104,6 +102,8 @@
       <span class="itemSlotTitle">Shoe Covers</span>
     </div>
   </div>
+  
+
   
 </div>
   <%- include("partials/recommendations.ejs") %>

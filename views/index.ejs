@@ -9,15 +9,6 @@
     </datalist>
   </form>
   
-  <div class="subcontainer" id="location">
-    <p id = "locationName">
-      <%= location %>
-    </p>
-    <p id="locationLatLng">
-      
-    </p>
-    
-  </div>
 
 
   <ul id="weatherRibbon" class="subcontainer">
@@ -29,6 +20,8 @@
       <div id="detailTop" class="detailRibbon">
         <span id="detailHour">4</span>
         <span id="detailAmpm">pm</span>
+        
+        <p id="locationName"><%= location %></p>
       </div>
       
       <div id="detailBot" class="detailRibbon">
@@ -103,12 +96,12 @@
   </div>
   
 </div>
-  <%- include("partials/scripts.ejs") %>
-  <%- include("partials/recommendations.ejs") %>
+  <%- include("scripts/scripts.ejs") %>
+  <%- include("scripts/recommendations.ejs") %>
 
-  <%- include("partials/searchBar.ejs") %>
-  <%- include("partials/apiCalls.ejs") %>
-  <%- include("partials/onLoad.ejs") %>
+  <%- include("scripts/searchBar.ejs") %>
+  <%- include("scripts/apiCalls.ejs") %>
+  <%- include("scripts/onLoad.ejs") %>
 <script>
 
 

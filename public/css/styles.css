@@ -1,19 +1,36 @@
-body {
-  font-family: 'Open Sans', sans-serif;
-  background-color: #0b3a52;
-  width: 100%;
-  height: 100%;
+/*https://poolors.com/fffeff-1a1f2b-65656b-de5d5a*/
+
+html {
+  font-size: 16px;
 }
 
-.container {
-  /*background-color: #fff;*/
-  width: 1000px;
-  margin: 0 auto;
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #182c3c;
+  width: 100%;
+  height: 100%;
+  margin: 0;
   padding: 0;
+}
+
+.flexCol {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
+}
+
+.flexRow {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .subcontainer {
@@ -25,16 +42,20 @@ body {
 
 .banner {
   width: 100%;
-  min-height: 100px;
+  min-height: 40px;
+  margin: 0;
+  padding: 0;
+  background-color: #120F0F;
+  color: #ECECEC;
+  font-size: 0.8rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #0A100D;
-  color: #F2F4F3;
 }
 
 /*Search Bar Styles*/
 #searchForm {
+  width: 90%;
   display: flex;
   flex-flow: row nowrap;
 }
@@ -44,8 +65,10 @@ body {
   height: 40px;
   margin: 0;
   padding: 0;
+  border: none;
   box-shadow: none;
-  font-size: 20px;
+  outline: none;
+  font-size: 1.2rem;
 }
 
 #searchBar:focus {
@@ -89,67 +112,34 @@ body {
   color: #ffffff;
 }
 
-/* Weather Refresh Button Styles */
-
-#refreshWeather {
-  background-color: #0496ff;
-  color: white;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: none;
-  cursor: pointer;
-}
-
-#refreshWeather > i {
-  color: white;
-}
-
-#refreshWeather:active {
-  border: 2px solid #0496ff;
-  color: #0496ff;
-  background-color: #fff;
-}
-
-#refreshWeather:active > i {
-  color: #0496ff;
-}
-
-#refreshWeather:focus {
-  border: none;
-  outline: none;
-}
-
 
 /* Weather Ribbon Styles */
-
 #weatherRibbon {
+  color: #f2efe2;
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
   align-items: stretch;
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 10px 0;
 }
 
 .ribbonItem {
   min-width: 4%;
   height: 120px;
   text-align: center;
-  margin: 0;
   flex: 1;
   display: flex;
   flex-flow: column nowrap;
   align-items: stretch;
   justify-content: space-around;
+  margin: 0;
 }
 
 .ribbonItem:hover {
-  box-shadow: 0 4px 8px 0 #ffcf0f, 0 6px 20px 0 #ffcf66;
+  /*box-shadow: 0 4px 8px 0 #6bcdfe, 0 6px 20px 0 #6bcdfe;*/
+  box-shadow: 0 0 10px #6bcdfe;
 }
 
 .ribbonItem > p {
@@ -166,7 +156,7 @@ body {
 
 .ribbonItem > .ribbonCond img {
   height: 40px;
-  width: 100%;
+  width: 40px;
 }
 
 .ribbonItem > .ribbonTemp {
@@ -194,71 +184,49 @@ body {
 }
 
 /* Hourly Weather Detail */
+
 #weatherDetail {
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: stretch;
   font-family: 'Source Sans Pro', sans-serif;
+  color: #ECECEC;
 }
 
-#weatherDetail > .detailRibbon {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
+#detailTime {
+  font-size: 2rem;
+  font-weight: 600;
 }
 
-#detailTop {
-  height: 30px;
-  background-color: #343A40;;
-  color: #fff;
-}
-
-#detailBot {
-  height: 90px;
-}
-
-.detailRibbon > .detailBlock {
-  height: 100%;
+#detailTop > p {
   margin: 0;
 }
 
-#detailBot > #detailTemp {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  font-size: 60px;
+#detailLocation {
+  text-transform: uppercase;
+}
+
+.detailTemp {
+  font-size: 5rem;
   font-weight: 600;
   font-family: 'Source Sans Pro', sans-serif;
 }
 
-.detailTempMisc {
-  font-size: 40px;
-}
-
-#detailBot > #detailDesc {
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-items: flex-start;
-  margin: 0 0 0 1.1rem;
+#detailDesc {
+  margin: 0;
   font-family: 'Source Sans Pro', sans-serif;
 }
 
-#detailBot > .detailBlock > p {
-  padding: 0;
-  margin: 0;
-  font-size: 13px;
+#detailDesc > div {
+  margin: 0.2rem 0;
+}
+
+#detailCond {
+  font-size: 2rem;
+  text-transform: capitalize;
 }
 
 
 /* Items */
 #items {
   color: #000;
-  /*display: flex;*/
-  /*flex-flow: column wrap;*/
-  /*justify-content: center;*/
-  /*align-items: center;*/
 }
 
 .itemSlot {
@@ -266,25 +234,15 @@ body {
   flex-flow: row nowrap;
   justify-content: center;
   align-items: center;
-  background-color: #343A40;
   color: #fff;
-  margin: 10px 0;
+  margin: 0;
   padding: 10px;
 }
-
-/*.itemSlot:first-child {*/
-/*  margin-top: 0;*/
-/*}*/
-
-/*.itemSlot:last-child {*/
-/*  margin-bottom: 0;*/
-/*}*/
 
 .itemSlotIcon {
   height: 50px;
   width: 50px;
   margin: 0 10;
-  object-fit: contain;
 }
 
 .itemSlotTitle {

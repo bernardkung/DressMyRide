@@ -1,16 +1,34 @@
 
 <%- include("partials/header.ejs") %>
 
-<button id='refreshWeather'><i class="fas fa-sync-alt fa-lg"></i></button>
 <div class="container">
-  <ul id="weatherRibbon" class="subcontainer">
+  <form id="searchForm" action="" method = "POST" class="subcontainer">
+    <input type="text" id="searchBar" name="location" class="search" placeholder="City" list="searchList">
+    <datalist id="searchList">
+      <!-- suggestions are inserted from javascript -->
+    </datalist>
+  </form>
+  
+  <div class="subcontainer" id="location">
+
+    <p id="locationLatLng">
+      
+    </p>
     
+  </div>
+
+
+  <ul id="weatherRibbon" class="subcontainer">
+    <!--items are filled from script-->
   </ul>
+  
   
   <div id="weatherDetail" class="subcontainer">
       <div id="detailTop" class="detailRibbon">
         <span id="detailHour">4</span>
         <span id="detailAmpm">pm</span>
+        
+        <p id="locationName"><%= location %></p>
       </div>
       
       <div id="detailBot" class="detailRibbon">
@@ -18,15 +36,32 @@
           <img id="detailIcon" src="https://openweathermap.org/img/wn/11d@2x.png">
         </div>
         <div id="detailTemp" class="detailBlock">
-          <span>40</span><span>&#176;</span>
+          <span id="detailTempValue">40</span>
+          <span id="detailTempDegree">&#176;</span>
+          <span id="detailTempUnit">F</span>
         </div>        
         <div id="detailDesc" class="detailBlock">
-          <p>thunderstorm with light rain</p>
-          <p>wind</p>
-          <p>precip</p>
+          
+          <p id="detailCond"></p>
+          <div id="detailWind">
+            <span id="detailWindSpeed"></span>
+            <span id="detailWindUnit">mph</span>
+            <span> of wind expected from </span>
+            <span id="detailWindDirection"></span>
+          </div>
+          <div id="detailPrecip">
+            <span id="detailPrecipChance"></span>
+            <span> chance of </span>
+            <span id="detailPrecipValue"></span>
+            <span id="detailPrecipUnit">inches</span>
+            of 
+            <span id="detailPrecipType"></span>
+          </div>
         </div>
+        
       </div>
   </div>
+  
   
   <div id="items" class="subcontainer">
     <div id="head" class="itemSlot">
@@ -41,7 +76,7 @@
       <img class="itemSlotIcon" src="/assets/image.png">
       <span class="itemSlotTitle">Mid Torso</span>
     </div>
-    <div id="base_torso" class="itemSlot">
+    <div id="inner_torso" class="itemSlot">
       <img class="itemSlotIcon" src="/assets/image.png">
       <span class="itemSlotTitle">Base Torso</span>
     </div>
@@ -66,38 +101,20 @@
       <span class="itemSlotTitle">Shoe Covers</span>
     </div>
   </div>
+  
 </div>
-
   <%- include("partials/scripts.ejs") %>
   <%- include("partials/recommendations.ejs") %>
 
+  <%- include("partials/searchBar.ejs") %>
+  <%- include("partials/apiCalls.ejs") %>
+  <%- include("partials/onLoad.ejs") %>
 <script>
 
-  
-  const refreshButton = document.querySelector('#refreshWeather')
-  const weatherRibbon = document.querySelector('#weatherRibbon')
 
-  // Weather Ribbon Events
-  document.addEventListener('onload', initializeWeatherRibbon())
-  
-  function initializeWeatherRibbon(){
-    const currHour = (new Date).getHours();
-    for (let i=0;i<24;i++){
-      
-      const condDiv = '<div class="ribbonCond"><i class="fas fa-exclamation-triangle"></i></div>'
-      const tempDiv = '<p class="ribbonTemp">##</p>';
-      
-      const hour = normalizeHour(currHour+i);
-      const ampm = normalizeAMPM(currHour+i);
-      const hourDiv = '<p class="ribbonHour">'+hour+'</p>';
-      const ampmDiv = '<p class="ribbonAmpm">'+ampm+'</p>';
-      
-      const hDiv = document.createElement("li");
-      hDiv.innerHTML = condDiv + tempDiv + hourDiv + ampmDiv;
-      hDiv.className = "ribbonItem";
-      hDiv.id = "ribbon"+i;
-      weatherRibbon.appendChild(hDiv);
-    }
-  }
+
+
+
 </script>
+  
 <%- include("partials/footer.ejs") %>

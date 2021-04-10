@@ -1,47 +1,53 @@
 
 <%- include("partials/header.ejs") %>
 
-<div class="container">
+<div class="container flexCol">
+  <div class="banner">
   <form id="searchForm" action="" method = "POST" class="subcontainer">
     <input type="text" id="searchBar" name="location" class="search" placeholder="City" list="searchList">
     <datalist id="searchList">
       <!-- suggestions are inserted from javascript -->
     </datalist>
   </form>
+  </div>
   
-
-
+  
   <ul id="weatherRibbon" class="subcontainer">
     <!--items are filled from script-->
   </ul>
   
   
-  <div id="weatherDetail" class="subcontainer">
-      <div id="detailTop" class="detailRibbon">
-        <span id="detailHour">4</span>
-        <span id="detailAmpm">pm</span>
-        
-        <p id="locationName"><%= location %></p>
+  
+  <div id="weatherDetail" class="subcontainer flexCol">
+      <div id="detailTop" class="flexCol">
+        <p id="detailTime">
+          <span id="detailHour">4</span>
+          <span id="detailAmpm">PM</span>
+        </p>
+        <p id="detailLocation"><%= location %></p>
       </div>
       
-      <div id="detailBot" class="detailRibbon">
-        <div class="detailBlock">
+      <div id="detailBot" class="flexCol">
+        
+        <div class="detailBlock flexRow">
           <img id="detailIcon" src="https://openweathermap.org/img/wn/11d@2x.png">
-        </div>
-        <div id="detailTemp" class="detailBlock">
-          <span id="detailTempValue">40</span>
-          <span id="detailTempDegree">&#176;</span>
-          <span id="detailTempUnit">F</span>
-        </div>        
-        <div id="detailDesc" class="detailBlock">
+
+          <span id="detailTempValue" class="detailTemp">40</span>
+          <span id="detailTempDegree" class="detailTemp">&#176;</span>
+          <span id="detailTempUnit" class="detailTemp">F</span>
+        </div>   
+        
+        <div id="detailDesc" class="detailBlock flexCol">
           
-          <p id="detailCond"></p>
+          <div id="detailCond"></div>
+          
           <div id="detailWind">
             <span id="detailWindSpeed"></span>
             <span id="detailWindUnit">mph</span>
             <span> of wind expected from </span>
             <span id="detailWindDirection"></span>
           </div>
+          
           <div id="detailPrecip">
             <span id="detailPrecipChance"></span>
             <span> chance of </span>
@@ -50,10 +56,14 @@
             of 
             <span id="detailPrecipType"></span>
           </div>
+          
         </div>
         
       </div>
   </div>
+  
+  
+
   
   
   <div id="items" class="subcontainer">
@@ -96,9 +106,8 @@
   </div>
   
 </div>
+  <%- include("partials/recommendations.ejs") %>
   <%- include("scripts/scripts.ejs") %>
-  <%- include("scripts/recommendations.ejs") %>
-
   <%- include("scripts/searchBar.ejs") %>
   <%- include("scripts/apiCalls.ejs") %>
   <%- include("scripts/onLoad.ejs") %>

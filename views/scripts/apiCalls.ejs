@@ -24,20 +24,11 @@
     fetch(query, {method:'GET'})
       .then(handleErrors)
       .then(parseJSON)
-      .then(updatePage)
+      .then(updateWeatherRibbon)
       .catch(console.warn)
   }
   
-  function updatePage(data) {
-    updateLocation(data);
-    updateWeatherRibbon(data);
-  }
 
-  
-  function updateLocation(data) {
-    const div = document.querySelector("#locationLatLng")
-    div.innerText = data
-  }
   
   
   

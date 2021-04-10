@@ -1,9 +1,9 @@
 
 <%- include("partials/header.ejs") %>
 
-<div class="container flexCol">
-  <div class="banner header">
-  <form id="searchForm" action="" method = "POST" class="subcontainer">
+<div class="container">
+  <div class="banner header flexRow">
+  <form id="searchForm" action="" method = "POST" class="subcontainer flexRow">
     <input type="text" id="searchBar" name="location" class="search" placeholder="City" list="searchList">
     <datalist id="searchList">
       <!-- suggestions are inserted from javascript -->
@@ -11,112 +11,107 @@
   </form>
   </div>
   
-  
-  <ul id="weatherRibbon" class="subcontainer">
-    <!--items are filled from script-->
-  </ul>
-  
-  
-  
-  <div id="weatherDetail" class="subcontainer flexCol">
-      <div id="detailTop" class="flexCol">
-        <p id="detailTime">
-          <span id="detailHour">4</span>
-          <span id="detailAmpm">PM</span>
-        </p>
-        <p id="detailLocation"><%= location %></p>
-      </div>
-      
-      <div id="detailBot" class="flexCol">
+  <div class="content">
+    <ul id="weatherRibbon" class="subcontainer">
+      <!--items are filled from script-->
+    </ul>
+    
+    <div id="weatherDetail" class="subcontainer flexCol">
+        <div id="detailTop" class="flexCol">
+          <p id="detailTime">
+            <span id="detailHour">4</span>
+            <span id="detailAmpm">PM</span>
+          </p>
+          <p id="detailLocation"><%= location %></p>
+        </div>
         
-        <div class="detailBlock flexRow">
-          <img id="detailIcon" src="https://openweathermap.org/img/wn/11d@2x.png">
-
-          <span id="detailTempValue" class="detailTemp">40</span>
-          <span id="detailTempDegree" class="detailTemp">&#176;</span>
-          <span id="detailTempUnit" class="detailTemp">F</span>
-        </div>   
-        
-        <div id="detailDesc" class="detailBlock flexCol">
+        <div id="detailBot" class="flexCol">
           
-          <div id="detailCond"></div>
+          <div class="detailBlock flexRow">
+            <img id="detailIcon" src="https://openweathermap.org/img/wn/11d@2x.png">
+  
+            <span id="detailTempValue" class="detailTemp">40</span>
+            <span id="detailTempDegree" class="detailTemp">&#176;</span>
+            <span id="detailTempUnit" class="detailTemp">F</span>
+          </div>   
           
-          <div id="detailWind">
-            <span id="detailWindSpeed"></span>
-            <span id="detailWindUnit">mph</span>
-            <span> of wind expected from </span>
-            <span id="detailWindDirection"></span>
-          </div>
-          
-          <div id="detailPrecip">
-            <span id="detailPrecipChance"></span>
-            <span> chance of </span>
-            <span id="detailPrecipValue"></span>
-            <span id="detailPrecipUnit">inches</span>
-            of 
-            <span id="detailPrecipType"></span>
+          <div id="detailDesc" class="detailBlock flexCol">
+            
+            <div id="detailCond"></div>
+            
+            <div id="detailWind">
+              <span id="detailWindSpeed"></span>
+              <span id="detailWindUnit">mph</span>
+              <span> of wind expected from </span>
+              <span id="detailWindDirection"></span>
+            </div>
+            
+            <div id="detailPrecip">
+              <span id="detailPrecipChance"></span>
+              <span> chance of </span>
+              <span id="detailPrecipValue"></span>
+              <span id="detailPrecipUnit">inches</span>
+              of 
+              <span id="detailPrecipType"></span>
+            </div>
+            
           </div>
           
         </div>
-        
+    </div>
+    
+    <div id="items" class="subcontainer flexCol">
+      <div id="head" class="itemSlot">
+        <img class="itemSlotIcon" src="/assets/image.png">
+        <span class="itemSlotTitle">Helmet</span>
       </div>
-  </div>
-
-  
-  
-  <div id="items" class="subcontainer flexCol">
-    <div id="head" class="itemSlot">
-      <img class="itemSlotIcon" src="/assets/image.png">
-      <span class="itemSlotTitle">Helmet</span>
-    </div>
-    <div id="outer_torso" class="itemSlot">
-      <img class="itemSlotIcon" src="/assets/image.png">
-      <span class="itemSlotTitle">Outer Torso</span>
-    </div>
-    <div id="mid_torso" class="itemSlot">
-      <img class="itemSlotIcon" src="/assets/image.png">
-      <span class="itemSlotTitle">Mid Torso</span>
-    </div>
-    <div id="inner_torso" class="itemSlot">
-      <img class="itemSlotIcon" src="/assets/image.png">
-      <span class="itemSlotTitle">Base Torso</span>
-    </div>
-    <div id="hands" class="itemSlot">
-      <img class="itemSlotIcon" src="/assets/image.png">
-      <span class="itemSlotTitle">Hands</span>
-    </div>
-    <div id="legs" class="itemSlot">
-      <img class="itemSlotIcon" src="/assets/image.png">
-      <span class="itemSlotTitle">Legs</span>
-    </div>
-    <div id="socks" class="itemSlot">
-      <img class="itemSlotIcon" src="/assets/image.png">
-      <span class="itemSlotTitle">Socks</span>
-    </div>
-    <div id="shoes" class="itemSlot">
-      <img class="itemSlotIcon" src="/assets/image.png">
-      <span class="itemSlotTitle">Shoes</span>
-    </div>
-    <div id="shoe_covers" class="itemSlot">
-      <img class="itemSlotIcon" src="/assets/image.png">
-      <span class="itemSlotTitle">Shoe Covers</span>
+      <div id="outer_torso" class="itemSlot">
+        <img class="itemSlotIcon" src="/assets/image.png">
+        <span class="itemSlotTitle">Outer Torso</span>
+      </div>
+      <div id="mid_torso" class="itemSlot">
+        <img class="itemSlotIcon" src="/assets/image.png">
+        <span class="itemSlotTitle">Mid Torso</span>
+      </div>
+      <div id="inner_torso" class="itemSlot">
+        <img class="itemSlotIcon" src="/assets/image.png">
+        <span class="itemSlotTitle">Base Torso</span>
+      </div>
+      <div id="hands" class="itemSlot">
+        <img class="itemSlotIcon" src="/assets/image.png">
+        <span class="itemSlotTitle">Hands</span>
+      </div>
+      <div id="legs" class="itemSlot">
+        <img class="itemSlotIcon" src="/assets/image.png">
+        <span class="itemSlotTitle">Legs</span>
+      </div>
+      <div id="socks" class="itemSlot">
+        <img class="itemSlotIcon" src="/assets/image.png">
+        <span class="itemSlotTitle">Socks</span>
+      </div>
+      <div id="shoes" class="itemSlot">
+        <img class="itemSlotIcon" src="/assets/image.png">
+        <span class="itemSlotTitle">Shoes</span>
+      </div>
+      <div id="shoe_covers" class="itemSlot">
+        <img class="itemSlotIcon" src="/assets/image.png">
+        <span class="itemSlotTitle">Shoe Covers</span>
+      </div>
     </div>
   </div>
-  
-
+  <div class="footer banner flexCol">
+    <p>Made by <a href="http://www.bkung.com">Bernard Kung</a></p>
+    <p>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></p>
+  </div>
   
 </div>
-  <%- include("partials/recommendations.ejs") %>
-  <%- include("scripts/scripts.ejs") %>
-  <%- include("scripts/searchBar.ejs") %>
-  <%- include("scripts/apiCalls.ejs") %>
-  <%- include("scripts/onLoad.ejs") %>
-<script>
 
+<!--Scripts-->
+<%- include("partials/recommendations.ejs") %>
+<%- include("scripts/scripts.ejs") %>
+<%- include("scripts/searchBar.ejs") %>
+<%- include("scripts/apiCalls.ejs") %>
+<%- include("scripts/onLoad.ejs") %>
 
-
-
-
-</script>
   
 <%- include("partials/footer.ejs") %>
